@@ -43,7 +43,10 @@ impl Toolbar {
 // Color picker function
     /*In the old version you could only change the Alpha value manually
       I found the input box to a bit wonky and sometimes doesnt work properly 
-      now we can properly chnage Alpha vlaues via the slider with color_edit_button_srgba */
+      now we can properly chnage Alpha vlaues via the slider with color_edit_button_srgba 
+      
+      update: somehow changing this breaks the entire gui*/
+    
         
     pub fn update(&mut self, egui_ctx: &egui::Context, selected_tool: Tool) -> Vec<Effect> {
         let mut events = Vec::new();
