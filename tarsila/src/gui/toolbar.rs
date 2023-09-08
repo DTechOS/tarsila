@@ -18,28 +18,32 @@ const TOOLS: [Tool; 8] = [
 
 pub struct Toolbar {
     tools: HashMap<Tool, ToolButton>,
-    brush: [u8; 3],
-    brush_alpha: String,
+    brush: egui::Color32,
+ //   brush_alpha: String,
 }
 
 impl Toolbar {
     pub fn new() -> Self {
         Self {
             tools: TOOLS.iter().map(|t| (*t, ToolButton::new(*t))).collect(),
-            brush: [0, 0, 0],
-            brush_alpha: "255".to_owned(),
+            brush: egui::Color32::LIGHT_BLUE,
+          //  brush_alpha: "255".to_owned(),
         }
     }
 
     pub fn sync(&mut self, main_color: [u8; 4]) {
-        self.brush = util::rgba_to_rgb_u8(main_color);
-        self.brush_alpha = main_color[3].to_string();
-    }
+        //self.brush = util::rgba_to_rgb_u8(main_color);
+       //self.brush_alpha = main_color[3].to_string();
+    } 
 
     pub fn get_mut(&mut self, tool: Tool) -> Option<&mut ToolButton> {
         self.tools.get_mut(&tool)
     }
 
+// Color picker function
+    /*In the old version you could only change the Alpha value manually
+      I found the input box to a bit wonky and sometimes doesnt work properly */
+        
     pub fn update(&mut self, egui_ctx: &egui::Context, selected_tool: Tool) -> Vec<Effect> {
         let mut events = Vec::new();
 
@@ -47,7 +51,8 @@ impl Toolbar {
             //            .default_pos((15., 280.))
             .show(egui_ctx, |ui| {
                 ui.horizontal(|ui| {
-                    let colorpicker = ui.color_edit_button_srgb(&mut self.brush);
+                    let colorpicker = ui.color_edit_button_srgba(&mut self.brush);
+                   /* 
                     let label = ui.label("a:");
                     let text_edit = ui
                         .add(
@@ -55,14 +60,15 @@ impl Toolbar {
                                 .desired_width(30.0),
                         )
                         .labelled_by(label.id);
+                    */
                     let color = [
                         self.brush[0],
                         self.brush[1],
                         self.brush[2],
-                        self.brush_alpha.parse().unwrap_or(255),
+                        self.brush[3], // Alpha
                     ];
 
-                    if colorpicker.changed() || text_edit.changed() {
+                    if colorpicker.changed() {
                         events.push(Event::SetMainColor(color.into()).into());
                     }
 
